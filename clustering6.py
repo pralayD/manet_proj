@@ -23,7 +23,7 @@ def nodes_in_cluster(n_c): #Creating random amount of APs for each cluster.
 		n_AP_clusters['c'+str(i)] = random.randint(2,6)
 
 
-def avg_calc(temp_list):
+def avg_calc(temp_list):  #Calculating the Average dBm level list.
 	total = 0
 	n = len(temp_list.keys())
 	for i in temp_list.keys():
@@ -37,11 +37,11 @@ def avg_calc(temp_list):
 	print '\n'
 
 
-def maxm_calc(temp_list):
+def maxm_calc(temp_list):		# Returning the AP having the Maximum dBm average.
 	return max(temp_list,key = temp_list.get)
 
 
-def check_dBm(normalized_distance):
+def check_dBm(normalized_distance):		# Assigning the dBm values to each AP.
 	for key in normalized_distance:
 		for item in normalized_distance[key]:
 			Quality = normalized_distance[key][item]
@@ -56,17 +56,19 @@ def check_dBm(normalized_distance):
 	return normalized_distance
 
 
-def check_Signal_Quality(distance_list,new_min = 0, new_max = 70):
+def check_Signal_Quality(distance_list,new_min = 0, new_max = 70): #Normalizing the distance of each AP out of 70 from the respective CH.
 	output = []
 	old_min, old_max = min(distance_list), max(distance_list)
 	
 	for i in distance_list:
+		'''division bby 0 error
 		temp = (new_max - new_min) / (old_max - old_min) * (i - old_min) + new_min
+		'''
 		output.append(round(temp,3))
 	return output
 
 
-def normalize_distance():
+def normalize_distance():		# Calculating the distance of each AP from the respective CH in order to normalize.
 	normalized_distance = {}
 	distance_CH = {}
 	for key in clusters:
@@ -81,8 +83,8 @@ def normalize_distance():
 				distance_CH[item] = round((((x_c - x)**2) + ((y_c - y)**2))**(1/2.0),3)
 		normalized_distance[key] = dict(distance_CH)
 		distance_CH.clear()
-	print 'ND   '
-	display(normalized_distance)
+	#print 'ND   '
+	#display(normalized_distance)
 		
 	distance_list = []
 	for key in normalized_distance:
@@ -107,26 +109,28 @@ def normalize_distance():
 			if item in cluster_heads[key]:
 				cluster_heads[key][item][0] = normalized_distance[key][item]
 
-	print 'finally'
+	#print 'finally'
 	#display(normalized_distance)
+	print '---Normalized the Distance---\n'
+	print 'Updated Cluster List'
 	display(clusters)
 
 	
-def find_CH(AP_list,k):
-	print 'AP list','\n',AP_list
+def find_CH(AP_list,k):		# Finding the CH every time the co-ordinate changes.
+	#print 'AP list','\n',AP_list
 	avg_calc(AP_list)  #Average Calculation
 	#CLuster head on the basis of maximum of average dBm levels.
 	c_h = {}
 	c_h[maxm_calc(avg_scan_list)] = AP_list[maxm_calc(avg_scan_list)]
 	cluster_heads['Cluster '+str(k)] = dict(c_h)
-	print 'Done'
-	print 'CH\n',cluster_heads
+	#print 'Done'
+	#print 'CH\n',cluster_heads
 	avg_scan_list.clear()
 	c_h.clear()
 
 	
 
-def assign_coordinates():
+def assign_coordinates():	# Assign CHs to each cluster whenever the co-ordinate changes.
 	for key in clusters:
 		temp1,temp2 = cluster_heads[key].keys()[0], cluster_heads[key].keys()[0]
 		x,y = cluster_heads[key][temp1][1], cluster_heads[key][temp2][1]
@@ -137,7 +141,7 @@ def assign_coordinates():
 				clusters[key][item].append(int(key[8]))
 
 
-def display(temp_list):
+def display(temp_list):		# Display the items in the passed Dictionaries.
 	for keys,values in temp_list.items():
 	    print(keys)
 	    print(values)
@@ -145,7 +149,7 @@ def display(temp_list):
 
 
 def change_coordinates(i):  #Change the co-ordinates of the APs after fixed interval of time.
-	cluster_heads.clear()
+	
 	while(i):
 		for key in clusters:
 			for val in clusters[key]:
@@ -164,28 +168,24 @@ def change_coordinates(i):  #Change the co-ordinates of the APs after fixed inte
 			for item in cluster_heads[key]:
 				cluster_heads[key][item][0] = random.randint(z-15,z+15)
 
-		print 'CH::\n'
-		
-		display(cluster_heads)
-		#normalize_distance()	#For updating the dBm values of each AP.
-
+		normalize_distance()	#For updating the dBm values of each AP.
+		cluster_heads.clear()
 		for key in clusters:
 			#print 'keys::\n',clusters[key]
 			find_CH(clusters[key],key[8])
 		print 'New Cluster Heads assigned...\n'
-		
-		#i -= 2
-
-		
-		print 'Clusters..\n'
-		display(clusters)
 		print 'Cluster Heads..\n'
 		display(cluster_heads)
+		
+		#i -= 2
+		print 'Clusters..\n'
+		display(clusters)
+		
 		print '::Executed Thread 1::','\n'
 		time.sleep(10)
 
 
-def assign_cluster_not_assigned(mobile_nodes,distance_CH):
+def assign_cluster_not_assigned(mobile_nodes,distance_CH): # Checks for the CHs for each AP which is currently not in any of the clusters.
 	radius = 10
 	print "Reached successfully..."
 	for key in distance_CH:
@@ -200,7 +200,7 @@ def assign_cluster_not_assigned(mobile_nodes,distance_CH):
 	return 
 
 
-def assign_cluster(mobile_nodes,distance_CH):
+def assign_cluster(mobile_nodes,distance_CH):	# Assigns Cluster to each AP.
 	print '\n',distance_CH
 	radius = 10
 
@@ -233,7 +233,7 @@ def assign_cluster(mobile_nodes,distance_CH):
 	return
 	
 
-def find_cluster(mobile_nodes,radius,flag):
+def find_cluster(mobile_nodes,radius,flag):		# Find a cluster for each AP on the basis of CH radius/range.
 
 	distance_CH = {}
 	temp_dict = {}
@@ -254,7 +254,7 @@ def find_cluster(mobile_nodes,radius,flag):
 	return 
 
 
-def check_mobility(j):
+def check_mobility(j):	# Checks whether the APs are still in the cluster or moved outside.
 	radius = 10
 	mobile_nodes = {}
 
@@ -355,8 +355,8 @@ normalize_distance()
 '''--------------------------------------------------------------------'''
 '''--------------------------------------------------------------------'''
 print 'Thread starts...\n'
-'''Thread(target=check_mobility,args=(2,)).start()
-time.sleep(5)'''
+Thread(target=check_mobility,args=(2,)).start()
+time.sleep(5)
 Thread(target=change_coordinates,args=(4,)).start()
 
 
