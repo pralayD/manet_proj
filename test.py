@@ -14,3 +14,6 @@ plt.ylabel('Y axis')
 plt.xlabel('X axis')
 plt.legend()
 plt.show() 
+
+
+print 'pralay'
