@@ -57,15 +57,20 @@ def check_dBm(normalized_distance):		# Assigning the dBm values to each AP.
 
 
 def check_Signal_Quality(distance_list,new_min = 0, new_max = 70): #Normalizing the distance of each AP out of 70 from the respective CH.
-	output = []
-	old_min, old_max = min(distance_list), max(distance_list)
-	
-	for i in distance_list:
-		'''division bby 0 error
-		temp = (new_max - new_min) / (old_max - old_min) * (i - old_min) + new_min
-		'''
-		output.append(round(temp,3))
-	return output
+	print 'DL'
+	print distance_list
+	if len(distance_list):
+		output = []
+		old_min, old_max = min(distance_list), max(distance_list)
+		
+		for i in distance_list:
+			try:
+				temp = (new_max - new_min) / (old_max - old_min) * (i - old_min) + new_min
+			except ZeroDivisionError:
+				temp = new_min
+			
+			output.append(round(temp,3))
+		return output
 
 
 def normalize_distance():		# Calculating the distance of each AP from the respective CH in order to normalize.
