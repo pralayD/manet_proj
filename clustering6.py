@@ -133,17 +133,50 @@ def find_CH(AP_list,k):		# Finding the CH every time the co-ordinate changes.
 	#print 'CH\n',cluster_heads
 	avg_scan_list.clear()
 	c_h.clear()
-
 	
 
 def assign_coordinates():	# Assign CHs to each cluster whenever the co-ordinate changes.
+	radius = 10
+	r = random.randint(1,int(radius / 2)) 
+	print 'r value',r # Displacement parameter.
 	for key in clusters:
 		temp1,temp2 = cluster_heads[key].keys()[0], cluster_heads[key].keys()[0]
 		x,y = cluster_heads[key][temp1][1], cluster_heads[key][temp2][1]
+
+		
+
+		# For determining the position of the AP in the co-ordinate system.
+
+		#Assigning the co-ordinates
 		for item in clusters[key]:
 			if item not in cluster_heads[key]:
-				clusters[key][item].append(random.randint(x-8,x+8))
-				clusters[key][item].append(random.randint(y-8,y+8))
+				pos_AP = random.randint(1,8)
+				print pos_AP,'\n'
+				if pos_AP == 1:
+					clusters[key][item].append(x-r)
+					clusters[key][item].append(y+r)
+				elif pos_AP == 2:
+					clusters[key][item].append(x)
+					clusters[key][item].append(y+r)
+				elif pos_AP == 3:
+					clusters[key][item].append(x+r)
+					clusters[key][item].append(y+r)
+				elif pos_AP == 4:
+					clusters[key][item].append(x+r)
+					clusters[key][item].append(y)
+				elif pos_AP == 5:
+					clusters[key][item].append(x+r)
+					clusters[key][item].append(y-r)
+				elif pos_AP == 6:
+					clusters[key][item].append(x)
+					clusters[key][item].append(y-r)
+				elif pos_AP == 7:
+					clusters[key][item].append(x-r)
+					clusters[key][item].append(y-r)
+				elif pos_AP == 8:
+					clusters[key][item].append(x-r)
+					clusters[key][item].append(y)
+				
 				clusters[key][item].append(int(key[8]))
 				clusters[key][item].append(100)
 
@@ -314,7 +347,7 @@ def energy_change():
 		for item in clusters[key]:
 			clusters[key][item][4] -= 0.1
 
-	
+
 
 '''--------------------------------------------------------------------
 Driver function 
@@ -364,7 +397,7 @@ for key in cluster_heads:
 		cluster_heads[key][item].append(int(raw_input('Y-cordinate:: ')))
 		cluster_heads[key][item].append(int(key[8]))
 display(cluster_heads)
-energy_change()
+#energy_change()
 assign_coordinates()   #'''Assigning the co-ordinates to each AP w.r.t to the CH'''
 
 print '\n'
