@@ -7,6 +7,7 @@ This module is for checking the Signal Quality based on distance to calculate th
 Creating clusters and distributing the APs.
 -------------------------------------------------'''
 import random,math
+
 import time
 from threading import Thread
 clusters = {} #Stores the APs of the clusters.
@@ -144,6 +145,7 @@ def assign_coordinates():	# Assign CHs to each cluster whenever the co-ordinate 
 				clusters[key][item].append(random.randint(x-8,x+8))
 				clusters[key][item].append(random.randint(y-8,y+8))
 				clusters[key][item].append(int(key[8]))
+				clusters[key][item].append(100)
 
 
 def display(temp_list):		# Display the items in the passed Dictionaries.
@@ -300,6 +302,19 @@ def check_mobility(j):	# Checks whether the APs are still in the cluster or move
 		#display(clusters)
 
 
+def energy_change():
+	'''
+	Energy depletion will be considered in three conditions:
+	1. Idle :: Reduce by 0.1 % per sec
+	2. Transmitting/Receiving ::
+		Normal AP :: Reduce by 0.5 % per sec
+		CH AP :: Reduce by 0.8 % per sec 
+	'''
+	for key in clusters:
+		for item in clusters[key]:
+			clusters[key][item][4] -= 0.1
+
+	
 
 '''--------------------------------------------------------------------
 Driver function 
@@ -349,7 +364,7 @@ for key in cluster_heads:
 		cluster_heads[key][item].append(int(raw_input('Y-cordinate:: ')))
 		cluster_heads[key][item].append(int(key[8]))
 display(cluster_heads)
-
+energy_change()
 assign_coordinates()   #'''Assigning the co-ordinates to each AP w.r.t to the CH'''
 
 print '\n'
