@@ -141,10 +141,8 @@ def assign_coordinates():	# Assign CHs to each cluster whenever the co-ordinate 
 	print 'r value',r # Displacement parameter.
 	for key in clusters:
 		temp1,temp2 = cluster_heads[key].keys()[0], cluster_heads[key].keys()[0]
-		x,y = cluster_heads[key][temp1][1], cluster_heads[key][temp2][1]
-
-		
-
+		x,y = cluster_heads[key][temp1][1], cluster_heads[key][temp2][2]
+		print 'x-y',x,y
 		# For determining the position of the AP in the co-ordinate system.
 
 		#Assigning the co-ordinates
