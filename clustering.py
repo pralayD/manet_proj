@@ -228,7 +228,7 @@ def change_coordinates(i):
 						clusters[key][item][2] = y
 					elif pos_AP == 5:
 						clusters[key][item][1] = x+r
-						clusters[key][item][1] = y-r
+						clusters[key][item][2] = y-r
 					elif pos_AP == 6:
 						clusters[key][item][1] = x
 						clusters[key][item][2] = y-r
@@ -238,11 +238,14 @@ def change_coordinates(i):
 					elif pos_AP == 8:
 						clusters[key][item][1] = x-r
 						clusters[key][item][2] = y	
-				if item in not_assigned:
+				'''if item in not_assigned:
 					not_assigned[item][0] = clusters[key][item][0]
 					not_assigned[item][1] = clusters[key][item][1]
 					not_assigned[item][2] = clusters[key][item][2]	
-	
+				'''
+		for key in not_assigned:
+			not_assigned[key][1] += random.randint(-5,5)
+			not_assigned[key][2] += random.randint(-5,5)
 		#i -= 2
 		print 'Clusters..\n'
 		display(clusters)
@@ -263,7 +266,7 @@ def assign_cluster_not_assigned(mobile_nodes,distance_CH): # Checks for the CHs 
 			del not_assigned[key]
 	print 'Updated not_assigned list\n'
 	print not_assigned
-	return 
+	#return 
 
 
 def assign_cluster(mobile_nodes,distance_CH):	# Assigns Cluster to each AP.
