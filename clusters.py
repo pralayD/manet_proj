@@ -58,8 +58,8 @@ def check_dBm(normalized_distance):		# Assigning the dBm values to each AP.
 
 
 def check_Signal_Quality(distance_list,new_min = 0, new_max = 70): #Normalizing the distance of each AP out of 70 from the respective CH.
-	print 'DL'
-	print distance_list
+	#print 'DL'
+	#print distance_list
 	if len(distance_list):
 		output = []
 		old_min, old_max = min(distance_list), max(distance_list)
@@ -117,7 +117,7 @@ def normalize_distance():		# Calculating the distance of each AP from the respec
 
 	#print 'finally'
 	#display(normalized_distance)
-	print '---Normalized the Distance---\n'
+	#print '---Normalized the Distance---\n'
 	print 'Updated Cluster List'
 	display(clusters)
 
@@ -138,18 +138,18 @@ def find_CH(AP_list,k):		# Finding the CH every time the co-ordinate changes.
 def assign_coordinates():	# Assign CHs to each cluster whenever the co-ordinate changes.
 	radius = 10
 	r = random.randint(1,int(radius / 2)) 
-	print 'r value',r # Displacement parameter.
+	#print 'r value',r # Displacement parameter.
 	for key in clusters:
 		temp1,temp2 = cluster_heads[key].keys()[0], cluster_heads[key].keys()[0]
 		x,y = cluster_heads[key][temp1][1], cluster_heads[key][temp2][2]
-		print 'x-y',x,y
+		#print 'x-y',x,y
 		# For determining the position of the AP in the co-ordinate system.
 
 		#Assigning the co-ordinates
 		for item in clusters[key]:
 			if item not in cluster_heads[key]:
 				pos_AP = random.randint(1,8)
-				print pos_AP,'\n'
+				#print pos_AP,'\n'
 				if pos_AP == 1:
 					clusters[key][item].append(x-r)
 					clusters[key][item].append(y+r)
@@ -192,12 +192,12 @@ def change_coordinates(i):
 	while (i):  #Change the co-ordinates of the APs after fixed interval of time.
 		radius = 10
 		r = random.randint(1,int(radius / 2)) 
-		print 'r value',r
+		#print 'r value',r
 		#Assigning the co-ordinates
 		for key in clusters:
 			for item in clusters[key]:
 				pos_AP = random.randint(1,8)
-				print pos_AP,'\n'
+				#print pos_AP,'\n'
 				if pos_AP == 1:
 					clusters[key][item][1] -= r
 					clusters[key][item][2] += r
@@ -230,11 +230,12 @@ def change_coordinates(i):
 		normalize_distance()	#For updating the dBm values of each AP.
 		cluster_heads.clear()
 		for key in clusters:
-				#print 'keys::\n',clusters[key]
+			#print 'keys::\n',clusters[key]
 			find_CH(clusters[key],key[8])
-			print 'New Cluster Heads assigned...\n'
-			print 'Cluster Heads..\n'
-			display(cluster_heads)
+			#print 'Cluster Heads..\n'
+			
+		print 'New Cluster Heads assigned...\n'
+		display(cluster_heads)
 
 		for key in not_assigned:
 			not_assigned[key][1] += random.randint(-r,r)
@@ -249,7 +250,7 @@ def change_coordinates(i):
 
 def assign_cluster_not_assigned(mobile_nodes,distance_CH): # Checks for the CHs for each AP which is currently not in any of the clusters.
 	radius = 10
-	print "Reached successfully..."
+	#print "Reached successfully..."
 	for key in distance_CH:
 		if distance_CH[key][1] <= radius:
 			clusters['Cluster '+ str(distance_CH[key][0][1])][key] = mobile_nodes[key]
@@ -324,8 +325,8 @@ def check_mobility(j):	# Checks whether the APs are still in the cluster or move
 		if len(not_assigned.keys()):
 			print 'Calling for Remaining APs::\n'
 			find_cluster(not_assigned,radius, 1)
-			print '-------------------------Done for not_assigned'
-			print 'not_assigned::\n',not_assigned
+			print '----------Done for not_assigned---------------'
+			#print 'not_assigned::\n',not_assigned
 
 		for key in clusters:
 			for val in clusters[key]:
