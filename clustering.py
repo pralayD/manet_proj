@@ -188,21 +188,21 @@ def display(temp_list):		# Display the items in the passed Dictionaries.
 	    print'\n'
 
 
-def change_coordinates(i):  #Change the co-ordinates of the APs after fixed interval of time.
-	radius = 10
-	r = random.randint(1,int(radius / 2)) 
-	print 'r value',r
+def change_coordinates(i):
+	while (i):  #Change the co-ordinates of the APs after fixed interval of time.
+		radius = 10
+		r = random.randint(1,int(radius / 2)) 
+		print 'r value',r
 
-	normalize_distance()	#For updating the dBm values of each AP.
-	cluster_heads.clear()
-	for key in clusters:
-			#print 'keys::\n',clusters[key]
-		find_CH(clusters[key],key[8])
-		print 'New Cluster Heads assigned...\n'
-		print 'Cluster Heads..\n'
-		display(cluster_heads)
+		normalize_distance()	#For updating the dBm values of each AP.
+		cluster_heads.clear()
+		for key in clusters:
+				#print 'keys::\n',clusters[key]
+			find_CH(clusters[key],key[8])
+			print 'New Cluster Heads assigned...\n'
+			print 'Cluster Heads..\n'
+			display(cluster_heads)
 
-	while(i):
 		for key in clusters:
 			temp1,temp2 = cluster_heads[key].keys()[0], cluster_heads[key].keys()[0]
 			x,y = cluster_heads[key][temp1][1], cluster_heads[key][temp2][2]
@@ -237,30 +237,12 @@ def change_coordinates(i):  #Change the co-ordinates of the APs after fixed inte
 						clusters[key][item][2] = y-r
 					elif pos_AP == 8:
 						clusters[key][item][1] = x-r
-						clusters[key][item][2] = y
+						clusters[key][item][2] = y	
 				if item in not_assigned:
 					not_assigned[item][0] = clusters[key][item][0]
 					not_assigned[item][1] = clusters[key][item][1]
-					not_assigned[item][2] = clusters[key][item][2]
-
-
-		'''for key in clusters:
-			for val in clusters[key]:
-
-				x,y,z = clusters[key][val][1],clusters[key][val][2],clusters[key][val][0]
-				
-				clusters[key][val][1] = random.randint(x-10,x+10)  # X-coordinate
-				clusters[key][val][2] = random.randint(y-10,y+10)  # Y-coordinate
-				
-				if val in not_assigned:
-					not_assigned[val][0] = clusters[key][val][0]
-					not_assigned[val][1] = clusters[key][val][1]
-					not_assigned[val][2] = clusters[key][val][2]
-
-		for key in cluster_heads:
-			for item in cluster_heads[key]:
-				cluster_heads[key][item][0] = random.randint(z-15,z+15)
-				'''		
+					not_assigned[item][2] = clusters[key][item][2]	
+	
 		#i -= 2
 		print 'Clusters..\n'
 		display(clusters)
