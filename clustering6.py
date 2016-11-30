@@ -178,6 +178,8 @@ def assign_coordinates():	# Assign CHs to each cluster whenever the co-ordinate 
 				clusters[key][item].append(int(key[8]))
 				clusters[key][item].append(100)
 
+			else:
+				cluster_heads[key][item].append(100)
 
 def display(temp_list):		# Display the items in the passed Dictionaries.
 	for keys,values in temp_list.items():
