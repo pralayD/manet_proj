@@ -193,7 +193,7 @@ def change_coordinates(i):
 		radius = 10
 		r = random.randint(1,int(radius / 2)) 
 		#print 'r value',r
-		#Assigning the co-ordinates
+		#Assigning the co-ordinates in 8 possible ways.
 		for key in clusters:
 			for item in clusters[key]:
 				pos_AP = random.randint(1,8)
@@ -325,7 +325,7 @@ def check_mobility(j):	# Checks whether the APs are still in the cluster or move
 		if len(not_assigned.keys()):
 			print 'Calling for Remaining APs::\n'
 			find_cluster(not_assigned,radius, 1)
-			print '----------Done for not_assigned---------------'
+			print '--------------Done for not_assigned---------------'
 			#print 'not_assigned::\n',not_assigned
 
 		for key in clusters:
