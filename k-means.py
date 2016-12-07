@@ -4,13 +4,17 @@ from sklearn.cluster import KMeans
 import numpy as np
 import random
 
+m = 0
+
 clusters_AP = []
 clusters = {}
 
-def create_AP(n_AP,i):
+def create_AP(n_AP,m):
+
 	AP_list = {}
 	for j in range(n_AP):
-		AP_list['c'+str(i)+'_AP'+str(j)] = []
+		AP_list['AP'+str(m)] = []
+		m += 1
 	return AP_list
 
 def assign_coordinates(m,AP_list):
@@ -18,7 +22,7 @@ def assign_coordinates(m,AP_list):
 	
 	(AP_list[c_h]).append(int(raw_input('X-coordinate::')))
 	(AP_list[c_h]).append(int(raw_input('Y-coordinate::')))
-	#
+	
 	x = AP_list[c_h][0]
 	y = AP_list[c_h][1]
 	r = 3
@@ -71,11 +75,14 @@ def display(temp_list):		# Display the items in the passed Dictionaries.
 	    print(values)
 	    print'\n'
 
-
+'''Driver function
+'''
 k = int(raw_input('Enter the number of clusters::\n'))
+
 for i in range(k):
 	n_AP = random.randint(2,5)
-	AP_list = create_AP(n_AP,i)
+	AP_list = create_AP(n_AP,m)
+	m = n_AP
 
 	assign_coordinates(i,AP_list)
 
