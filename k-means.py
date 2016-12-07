@@ -1,5 +1,7 @@
-'''k-means clustering
 '''
+k-means clustering
+'''
+
 from sklearn.cluster import KMeans
 import numpy as np
 import random
@@ -7,7 +9,7 @@ import random
 m = 0
 
 clusters_AP = []
-clusters = {}
+clusters = []
 
 def create_AP(n_AP,m):
 
@@ -57,8 +59,10 @@ def assign_coordinates(m,AP_list):
 
 	for i in AP_list:
 		clusters_AP.append([AP_list[i][0],AP_list[i][1]])
+
+	clusters.append(AP_list)
 	print 'c'+str(m)+'::\n'
-	print AP_list
+	print AP_list,'\n'
 
 
 def k_means_algo(k):
@@ -66,6 +70,7 @@ def k_means_algo(k):
 	kmeans = KMeans(n_clusters = k, random_state = 0).fit(X_Y)
 	clust_no = kmeans.labels_
 
+	#for
 	print clust_no
 	#print kmeans.cluster_centers_
 
@@ -75,7 +80,8 @@ def display(temp_list):		# Display the items in the passed Dictionaries.
 	    print(values)
 	    print'\n'
 
-'''Driver function
+'''
+Driver function
 '''
 k = int(raw_input('Enter the number of clusters::\n'))
 
@@ -86,10 +92,10 @@ for i in range(k):
 
 	assign_coordinates(i,AP_list)
 
-print clusters
-	#print clusters_AP
+#print clusters
+print clusters_AP
 
-
+print '\n',clusters,'\n'
 k_means_algo(k)
 	
 #display(clusters)
