@@ -6,27 +6,28 @@ from sklearn.cluster import KMeans
 import numpy as np
 import random
 
-m = 0
+m = 0		# Declared for denoting the new APs.
 
-clusters_AP = []
-clusters = {}
+clusters_AP = []	# List holding the co-ordinates of the APs.
+clusters = {}		# Dictionary holding the APs with co-ordinates and the cluster no.
 
 def create_AP(n_AP):
 	global m
-	AP_list = {}
+	AP_list = {}	# Temporary dictionary holding the APs.
 	for j in range(n_AP):
 		AP_list['AP'+str(m)] = []
 		m += 1
 	return AP_list
 
 def assign_coordinates(c,AP_list):
-	c_h = random.choice(AP_list.keys())
+	c_h = random.choice(AP_list.keys())		''' Selecting any random AP for assignment of co-ordinates on the basis of which other
+											  co-ordinates are assigned.'''
 	
 	(AP_list[c_h]).append(int(raw_input('X-coordinate::')))
 	(AP_list[c_h]).append(int(raw_input('Y-coordinate::')))
 	
-	x = AP_list[c_h][0]
-	y = AP_list[c_h][1]
+	x = AP_list[c_h][0]		# Taking out the X-value
+	y = AP_list[c_h][1]		# Taking out the Y-value
 	r = 3
 	for i in AP_list:
 		if i not in c_h:
@@ -64,7 +65,7 @@ def assign_coordinates(c,AP_list):
 	print AP_list,'\n'
 
 
-def k_means_algo(k):
+def k_means_algo(k): 
 	X_Y = np.array(clusters_AP)
 	kmeans = KMeans(n_clusters = k, random_state = 0).fit(X_Y)
 	clust_no = kmeans.labels_
@@ -74,18 +75,29 @@ def k_means_algo(k):
 		clusters[i].append(j)
 
 	print clusters
-	#print kmeans.cluster_centers_
+	return kmeans
 
 
-def find_clust(n_nodes):
+def create_AP_local(n_nodes):		# Function for the new APs.
 	global m
 	clust = {}
 	for i in range(n_nodes):
 		clust['AP'+str(m)] = map(int,raw_input().split())
 		m += 1
-	
-	print clust 	
+	return clust
+
 		
+def predict_loc(clust,kmeans):		# Prediction of the co-ordinates for the new APs.
+	temp = []
+	for i in clust:
+		temp.append(clust[i])
+
+	pred = kmeans.predict(temp)
+	print pred
+	for i,j in zip(clust,pred):
+		clust[i].append(j)
+		clusters[i] = clust[i]
+
 
 def display(temp_list):		# Display the items in the passed Dictionaries.
 	for keys,values in temp_list.items():
@@ -97,6 +109,7 @@ def display(temp_list):		# Display the items in the passed Dictionaries.
 Driver function
 '''
 k = int(raw_input('Enter the number of clusters::\n'))
+#Initial Stage.
 
 for i in range(k):
 	n_AP = random.randint(2,5)
@@ -112,13 +125,17 @@ print '::AP List::'
 print clusters,'\n'
 print 'Co-ordinate List\n',clusters_AP
 
-k_means_algo(k)
+kmeans = k_means_algo(k)
 
-display(clusters)
+# Final Stage.
 
 n_nodes = int(raw_input('Enter the number of APs to be predicted::\n'))
 
-find_clust(n_nodes)
+clust = create_AP_local(n_nodes)
+
+predict_loc(clust,kmeans)
+
+print clusters
 
 
 '''
