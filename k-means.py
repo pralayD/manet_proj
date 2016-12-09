@@ -10,6 +10,7 @@ m = 0		# Declared for denoting the new APs.
 
 clusters_AP = []	# List holding the co-ordinates of the APs.
 clusters = {}		# Dictionary holding the APs with co-ordinates and the cluster no.
+cluster_list = {}
 
 def create_AP(n_AP):
 	global m
@@ -20,8 +21,10 @@ def create_AP(n_AP):
 	return AP_list
 
 def assign_coordinates(c,AP_list):
-	c_h = random.choice(AP_list.keys())		''' Selecting any random AP for assignment of co-ordinates on the basis of which other
-											  co-ordinates are assigned.'''
+	c_h = random.choice(AP_list.keys())		
+	''' Selecting any random AP for assignment of co-ordinates on the basis of which other
+		co-ordinates are assigned.
+	'''
 	
 	(AP_list[c_h]).append(int(raw_input('X-coordinate::')))
 	(AP_list[c_h]).append(int(raw_input('Y-coordinate::')))
@@ -98,6 +101,20 @@ def predict_loc(clust,kmeans):		# Prediction of the co-ordinates for the new APs
 		clust[i].append(j)
 		clusters[i] = clust[i]
 
+def assign_clusters(k):		# For preparing default cluster list.
+	for i in range(k):
+		cluster_list['Cluster '+str(i)] = None
+
+	for i in cluster_list:
+		temp = {}
+		for j in clusters:
+			if clusters[j][2] == int(i[8]):
+				temp[j] = clusters[j]
+		cluster_list[i] = dict(temp) 
+	print '\n'
+	display(cluster_list)
+
+
 
 def display(temp_list):		# Display the items in the passed Dictionaries.
 	for keys,values in temp_list.items():
@@ -136,6 +153,8 @@ clust = create_AP_local(n_nodes)
 predict_loc(clust,kmeans)
 
 print clusters
+
+assign_clusters(k)
 
 
 '''
