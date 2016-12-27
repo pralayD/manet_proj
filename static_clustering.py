@@ -7,6 +7,7 @@ This module is for checking the Signal Quality based on distance to calculate th
 Creating clusters and distributing the APs.
 -------------------------------------------------'''
 import random,math
+import pickle
 import time
 from threading import Thread
 
@@ -18,9 +19,6 @@ if __name__ == "__main__":
 	n_AP_clusters = {} # No. of APs in each cluster.
 	not_assigned = {} # Mobile nodes not assigned to any cluster.
 	avg_scan_list = {} #Finding the average of the dBm levels from each AP to the other.
-
-	m = 0
-	n_c = int(raw_input('Enter the number of clusters:\n')) 
 
 	def nodes_in_cluster(n_c): #Creating random amount of APs for each cluster.
 		for i in range(n_c):
@@ -237,12 +235,20 @@ if __name__ == "__main__":
 			for key in not_assigned:
 				not_assigned[key][1] += random.randint(-r,r)
 				not_assigned[key][2] += random.randint(-r,r)
-			#i -= 2
+			i -= 1
 			print 'Clusters..\n'
 			display(clusters)
+
+			temp = not_assigned
+			for key in temp:
+				temp[key][3] = None
 			
+			pickle.dump(clusters,open('clust_f.txt','w+'))
+			pickle.dump(cluster_heads,open('clust_h_f.txt','w+'))
+			pickle.dump(temp,open('remaining_APs.txt','w+'))
+			temp.clear()
 			print '::Executed Thread 1::','\n'
-			time.sleep(10)
+			time.sleep(5)
 
 
 	def assign_cluster_not_assigned(mobile_nodes,distance_CH): # Checks for the CHs for each AP which is currently not in any of the clusters.
@@ -342,6 +348,7 @@ if __name__ == "__main__":
 							'''
 							Call the function to assign a new cluster.
 							'''
+
 							mobile_nodes[val] = [clusters[key][val][0],clusters[key][val][1],clusters[key][val][2],clusters[key][val][3]]
 							print val,'of',key,'is not in range.\n'
 			
@@ -349,10 +356,10 @@ if __name__ == "__main__":
 			print 'Mobile Nodes\n',mobile_nodes
 			find_cluster(mobile_nodes,radius,0)			
 			
-			#j -= 1
+			j -= 1
 			print '::Executed Thread 2::','\n\n'
 			mobile_nodes.clear()
-			time.sleep(6)
+			time.sleep(5)
 			#display(clusters)
 
 
@@ -373,14 +380,14 @@ if __name__ == "__main__":
 	'''--------------------------------------------------------------------
 	Driver function 
 	--------------------------------------------------------------------'''
-
+	n_c = int(raw_input('Enter the number of clusters:\n')) 
 	nodes_in_cluster(n_c)   #No. of nodes in clusters.
 
 	print 'Each clusters with their respective number of APs::'
 	print n_AP_clusters
 	print '\n'
 	print '----------------------------------------------------------'
-
+	m = 0
 	for k in range(n_c):
 		print 'Cluster::',k
 		print '\n'
@@ -432,19 +439,13 @@ if __name__ == "__main__":
 	normalize_distance()
 	'''--------------------------------------------------------------------'''
 	'''--------------------------------------------------------------------'''
-	'''
+	
 	print 'Thread starts...\n'
 
-	Thread(target=check_mobility,args=(2,)).start()
-	time.sleep(5)
+	Thread(target=check_mobility,args=(4,)).start()
+	time.sleep(3)
 	Thread(target=change_coordinates,args=(4,)).start()
-	'''
-	execfile("/home/pralay/Desktop/MANET/routing.py")
-	#route_discovery()
-
-
-#print 'not assigned\n',not_assigned
-
+	
 
 
 
