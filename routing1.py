@@ -60,7 +60,16 @@ for i in range(n_AP):
 		elif node2 in temp_dict_AP:
 			routing_dict[node2] = -1 
 	routing_table[node1] = routing_dict
-print 'routing table'
+print 'Routing Table'
 display(routing_table)
 
+print '::\nBuilding the Routing Matrix::\n'
+route_matrix = open('route_matrix.txt','w+')
+hops = []
 
+for key in routing_table:
+	for val in routing_table[key]:
+		route_matrix.write(str(routing_table[key][val])+' ')
+	route_matrix.write('\n')
+
+route_matrix.close()
