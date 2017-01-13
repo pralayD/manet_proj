@@ -124,16 +124,18 @@ for i in range(n_AP):
 				#print 'CH_x',CH_x,'CH_y',CH_y				
 				hops = find_host(CH_x,CH_y)
 				count = 0
-				#print 'Hops',hops,
+				if hops == True:
+					hops = 0
+				#print 'Hops',hops,node1,node2
 				if isinstance(hops,int):
-					hops += 2
+					#hops += 2
 					routing_dict[node2] = hops
 				else:
 					#print 'Not found::',node2
 					routing_dict[node2] = -1
-
+				print '\n'
 		
-		print 'value',routing_dict[node2]
+		#print 'value',routing_dict[node2]
 		#dummy = raw_input()			
 		
 	routing_table[node1] = routing_dict
