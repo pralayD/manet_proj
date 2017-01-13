@@ -14,6 +14,56 @@ cluster_heads_r = pickle.load(open('clust_h_f.txt','r'))
 remaining_APs = pickle.load(open('remaining_APs.txt','r'))
 cluster_heads_detected = pickle.load(open('clust_h_d.txt','r'))
 
+count = 0
+visited = []
+def find_host(CH_x,CH_y):
+	global count
+	visited.append(CH_x)
+	li = cluster_heads_detected[CH_x]
+
+	if len(li) == 0:
+		visited.remove(CH_x)
+		return False
+
+	if CH_y in li:
+		count += 1
+		visited.remove(CH_x)
+		return True
+
+	if all(x in visited for x in li):
+		visited.remove(CH_x)
+		return False
+	else:
+		count += 1
+		for item in li:
+			if item not in visited:
+				hop_count = [] 
+				count1 = count
+				#print 'count1 and count',count1, count
+				rec_call = find_host(item,CH_y)
+
+				if rec_call == False:
+					count = count1
+					#continue
+				elif rec_call == True:
+					hop_count.append(count)
+					count = count1
+					#continue
+				elif isinstance(rec_call,int):
+					hop_count.append(rec_call)
+					count = count1
+					#continue
+				elif rec_call == '#':
+					count = count1
+					#continue
+
+		visited.remove(CH_x)
+		if len(hop_count):
+			return min(hop_count)			
+		else:
+			return '#'
+
+
 display(clusters_r)
 display(cluster_heads_r)
 display(remaining_APs)
@@ -44,22 +94,48 @@ routing_table = collections.OrderedDict()
 for i in range(n_AP):
 	routing_dict = collections.OrderedDict()
 	node1 = 'AP'+str(i)
+	#print 'node1',node1
 	if node1 in temp_dict_r:
 		cl_no = temp_dict_r[node1][3]
 	elif node1 in temp_dict_AP:
 		cl_no = temp_dict_AP[node1][3]
-
+	#print node1,cl_no
 	for j in range(n_AP):
 		node2 = 'AP'+str(j)
+		#print 'node2',node2
 		if node2 == node1:
-			routing_dict[node2] = 0
-		elif node2 in temp_dict_r:
+			routing_dict[node2] = 0 
+			#continue
+
+		elif node2 in temp_dict_AP or node1 in temp_dict_AP:
+			routing_dict[node2] = -1 
+
+		else:
+		#elif node2 in temp_dict_r:
 			if cl_no == temp_dict_r[node2][3]:
 				routing_dict[node2] = 1
 			else:
-				routing_dict[node2] = -1
-		elif node2 in temp_dict_AP:
-			routing_dict[node2] = -1 
+				for key in temp_dict_h:
+					if temp_dict_h[key][3] == temp_dict_r[node2][3]:
+						CH_y = key
+					if temp_dict_h[key][3] == cl_no:
+						CH_x = key
+
+				#print 'CH_x',CH_x,'CH_y',CH_y				
+				hops = find_host(CH_x,CH_y)
+				count = 0
+				#print 'Hops',hops,
+				if isinstance(hops,int):
+					hops += 2
+					routing_dict[node2] = hops
+				else:
+					#print 'Not found::',node2
+					routing_dict[node2] = -1
+
+		
+		print 'value',routing_dict[node2]
+		#dummy = raw_input()			
+		
 	routing_table[node1] = routing_dict
 print 'Routing Table'
 display(routing_table)
