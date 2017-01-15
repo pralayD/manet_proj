@@ -129,12 +129,13 @@ for i in range(n_AP):
 					print hops
 					print CH_x,CH_y
 				if hops == True:
-					print 'yes'
-					if node2 == CH_y:
+					if node1 == CH_x and node2 == CH_y:
+						hops = 1
+						routing_dict[node2] = hops
+					elif node2 == CH_y:
 						hops = 2
 						routing_dict[node2] = hops
 					else:
-						print 'no'
 						hops = 3
 						routing_dict[node2] = hops
 				#print 'Hops',hops,node1,node2
