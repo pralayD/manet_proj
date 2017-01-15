@@ -125,6 +125,7 @@ for i in range(n_AP):
 
 				#print 'CH_x',CH_x,'CH_y',CH_y				
 				hops = find_host(CH_x,CH_y)
+				count = 0
 				if node1 == 'AP10' and node2 == 'AP4':
 					print hops
 					print CH_x,CH_y
@@ -140,13 +141,17 @@ for i in range(n_AP):
 						routing_dict[node2] = hops
 				#print 'Hops',hops,node1,node2
 				elif isinstance(hops,int):
-					hops += 2
-					routing_dict[node2] = hops
+					if node1 == CH_x and node2 == CH_y:
+						routing_dict[node2] = hops
+					elif (node1 == CH_x and node2 != CH_y) or (node1 != CH_x and node2 == CH_y):
+						routing_dict[node2] = hops + 1
+					else:
+						routing_dict[node2] = hops + 2
 				
 				else:
 					#print 'Not found::',node2
 					routing_dict[node2] = -1
-		
+				
 		#print 'value',routing_dict[node2]
 		#dummy = raw_input()			
 		
