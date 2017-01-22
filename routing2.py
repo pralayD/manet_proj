@@ -100,20 +100,20 @@ for u in cluster_heads_r:
 
 for u in remaining_APs:
 	temp_dict_AP[u] = remaining_APs[u]
-
+'''
 display(temp_dict_r)
 print '-----------'
 display(temp_dict_h)
 print '-----------'
 display(temp_dict_AP)
 print '-------'
-
+'''
 
 # Creating the Distance Matrix.
 
 
 routing_table = collections.OrderedDict()
-for i in range(n_AP):
+for i in range(1,n_AP+1):
 	routing_dict = collections.OrderedDict()
 	node1 = 'AP'+str(i)
 	#print 'node1',node1
@@ -122,7 +122,7 @@ for i in range(n_AP):
 	elif node1 in temp_dict_AP:
 		cl_no = temp_dict_AP[node1][3]
 	#print node1,cl_no
-	for j in range(n_AP):
+	for j in range(1,n_AP+1):
 
 		# For Intra-Cluster
 
@@ -176,7 +176,7 @@ for i in range(n_AP):
 					if node1 == CH_x and node2 == CH_y:
 						hops = 1
 						routing_dict[node2] = hops
-					elif node2 == CH_y:
+					elif node2 == CH_y or node1 == CH_x:
 						hops = 2
 						routing_dict[node2] = hops
 					else:
@@ -219,3 +219,8 @@ for key in routing_table:
 route_matrix.close()
 print 'Detected CHS..'
 display(cluster_heads_detected)
+
+
+'''
+Problem :: Cluster Head to a node in different cluster.
+'''

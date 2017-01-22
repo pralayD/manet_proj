@@ -10,7 +10,7 @@ import random,math
 import pickle
 import time
 from threading import Thread
-m = 0
+
 clusters = {} #Stores the APs of the clusters.
 cluster_heads = {} # Dictionary with final CHs.
 n_AP_clusters = {} # No. of APs in each cluster.
@@ -18,14 +18,16 @@ not_assigned = {} # Mobile nodes not assigned to any cluster.
 avg_scan_list = {} #Finding the average of the dBm levels from each AP to the other.
 
 
-n_c = int(raw_input('Enter the number of clusters:\n')) 
+
 
 def nodes_in_cluster(n_c): #Creating random amount of APs for each cluster.
-	for i in range(n_c):
-		n_AP_clusters['c'+str(i)] = random.randint(2,6)
+	for i in range(1,n_c + 1):
+		n_AP_clusters['c'+str(i)] = 10#random.randint(2,6)
 
 
-def avg_calc(temp_list):  #Calculating the Average dBm level list.
+def avg_calc(temp_list,status):  #Calculating the Average dBm level list.
+	#if status == 1:
+	#	AP_list = temp_list
 	total = 0
 	n = len(temp_list.keys())
 	for i in temp_list.keys():
@@ -36,19 +38,57 @@ def avg_calc(temp_list):  #Calculating the Average dBm level list.
 		total = 0
 	#print 'Average dBm level list::'
 	#print avg_scan_list
-	print '\n'
+	#print '\n'
+	#print 'AP---',AP_list
+	new_CH = maxm_calc(temp_list,status)
+	if new_CH == False:
+		return False
+	else:
+		return new_CH
+	if status == 0:
+		return new_CH
 
 
-def maxm_calc(temp_list,AP_list,status):
+def maxm_calc(temp_list,status):
+	global AP_list
 	if status == 0:		# Returning the AP having the Maximum dBm average.
 		return max(temp_list,key = temp_list.get)
 	else:
-		new_CH = max(temp_list,key = temp_list.get)
-		if AP_list[new_CH][4] > 35:
-			return new_CH
+		if len(temp_list):
+			new_CH = max(temp_list,key = temp_list.get)
+			if AP_list[new_CH][4] > 35:
+				return new_CH
+			else:
+				#print new_CH,'deleted'
+				del temp_list[new_CH]
+				#print 'new twm',temp_list
+				new_CH = maxm_calc(temp_list,status)
+				if new_CH == False:
+					return False
+				else:
+					return new_CH
 		else:
-			del temp_list[new_CH]
-			maxm_calc(temp_list,AP_list,status)
+			return False
+	#return False
+	
+
+def find_CH(temp_list,k,status):
+	 # Finding the CH every time the co-ordinate changes.
+		
+	new_CH = avg_calc(temp_list,status)
+	#CLuster head on the basis of maximum of average dBm levels.
+	#print new_CH
+	c_h = {}
+	#new_CH = maxm_calc(avg_scan_list,AP_list,status) 
+	if new_CH != False:
+		c_h[new_CH] = AP_list[new_CH]
+		cluster_heads['Cluster '+str(k)] = dict(c_h)
+	#print 'Done'
+	#print 'CH\n',cluster_heads
+	#print cluster_heads
+	avg_scan_list.clear()
+	c_h.clear()
+	
 
 
 def check_dBm(normalized_distance):		# Assigning the dBm values to each AP.
@@ -129,20 +169,6 @@ def normalize_distance():		# Calculating the distance of each AP from the respec
 	#print '---Normalized the Distance---\n'
 	print 'Updated Cluster List'
 	display(clusters)
-
-	
-def find_CH(AP_list,k,status):		# Finding the CH every time the co-ordinate changes.
-	#print 'AP list','\n',AP_list
-	avg_calc(AP_list)  #Average Calculation
-	#CLuster head on the basis of maximum of average dBm levels.
-	c_h = {}
-	new_CH = maxm_calc(avg_scan_list,AP_list,status) 
-	c_h[new_CH] = AP_list[new_CH]
-	cluster_heads['Cluster '+str(k)] = dict(c_h)
-	#print 'Done'
-	#print 'CH\n',cluster_heads
-	avg_scan_list.clear()
-	c_h.clear()
 	
 
 def assign_coordinates():	# Assign CHs to each cluster whenever the co-ordinate changes.
@@ -198,7 +224,7 @@ def display(temp_list):		# Display the items in the passed Dictionaries.
 	    print'\n'
 
 def cluster_head_detection(radius):
-	print '--------------------------------'
+	#print '--------------------------------'
 	temp_CH = {}
 	cluster_head_detected = {}
 	radius += 20 
@@ -216,16 +242,18 @@ def cluster_head_detection(radius):
 				y2 = temp_CH[key1][2]
 
 				distance = round((((x1 - x2) ** 2) + ((y1 - y2) ** 2)) ** (1/2.0),3)
-				print key,key1,distance
+				#print key,key1,distance
 				if distance <= radius:
 					temp_list.append(key1)
 		cluster_head_detected[key] = temp_list
 
 	print 'Dumping cluster heads...'
-	pickle.dump(cluster_head_detected,open('clust_h_d.txt','w'))	
-	print '--------------------------------'
+	pickle.dump(cluster_head_detected,open('clust_h_d.txt','w'))
+	print "Dumped."	
+	print '--------------------------------\n'
 
 def change_coordinates(i):
+	global AP_list
 	while (i):  #Change the co-ordinates of the APs after fixed interval of time.
 		radius = 10
 		r = random.randint(1,int(radius / 2)) 
@@ -268,6 +296,8 @@ def change_coordinates(i):
 		cluster_heads.clear()
 		for key in clusters:
 			#print 'keys::\n',clusters[key]
+			AP_list = clusters[key]
+			#print 'status 1',AP_list
 			find_CH(clusters[key],key[8],status)
 			#print 'Cluster Heads..\n'
 			
@@ -280,8 +310,9 @@ def change_coordinates(i):
 		i -= 2
 		print 'Clusters..\n'
 		display(clusters)
-		print 'not Assigned::'
-		display(not_assigned)
+		if len(not_assigned):
+			print 'APs not in any of the clusters::'
+			display(not_assigned)
 		clone_not_assigned = not_assigned
 		#print 'clone'
 		for key in clone_not_assigned:
@@ -295,7 +326,7 @@ def change_coordinates(i):
 		cluster_head_detection(radius)
 		
 		clone_not_assigned.clear()
-		print '::Executed Thread 1::','\n'
+		print '::Executed Thread 1::','\n\n'
 		time.sleep(10)			
 
 
@@ -316,7 +347,10 @@ def assign_cluster_not_assigned(mobile_nodes,distance_CH): # Checks for the CHs 
 
 
 def assign_cluster(mobile_nodes,distance_CH):	# Assigns Cluster to each AP.
-	print '\n',distance_CH
+	if len(distance_CH):
+		print 'Distance Cluster Heads..'
+		display(distance_CH)
+
 	radius = 10
 
 	for key in distance_CH:
@@ -334,18 +368,20 @@ def assign_cluster(mobile_nodes,distance_CH):	# Assigns Cluster to each AP.
 		else:
 			not_assigned[key] = clusters['Cluster '+ str(distance_CH[key][2])][key]
 
-	print 'Executing for the remaining nodes.\n'
+	print 'Executing for the remaining nodes...\n'
 	for key in not_assigned:
 		if key in clusters['Cluster '+ str(not_assigned[key][3])]:
 			del clusters['Cluster '+ str(not_assigned[key][3])][key]
 			print 'Deleted from the clusters.'
 
-	print '\n\n'
+	print 'New Cluster List.'
 	display(clusters)
-
-	print '::Remaining APs::\n'
-	print '\n',not_assigned,'\n'
-	return
+	if len(not_assigned):
+		print '::Remaining APs::\n'
+		display(not_assigned)
+	
+	#print '\n',not_assigned,'\n'
+	#return
 	
 
 def find_cluster(mobile_nodes,radius,flag):		# Find a cluster for each AP on the basis of CH radius/range.
@@ -391,16 +427,19 @@ def check_mobility(j):	# Checks whether the APs are still in the cluster or move
 					#temp_x_c , temp_y_c = ,
 					x_c,y_c = cluster_heads[key][cluster_heads[key].keys()[0]][1],cluster_heads[key][cluster_heads[key].keys()[0]][2]
 					distance = round((((x - x_c) ** 2) + ((y - y_c) ** 2)) ** (1/2.0),3)
-					print val,distance
+					#print val,distance
 					if  distance > radius:
 						'''
 						Call the function to assign a new cluster.
 						'''
 						mobile_nodes[val] = [clusters[key][val][0],clusters[key][val][1],clusters[key][val][2],clusters[key][val][3]]
-						print val,'of',key,'is not in range.\n'
+						#print val,'of',key,'is not in range.\n'
 		
 		print 'Calling function ...\n'
-		print 'Mobile Nodes\n',mobile_nodes
+		if len(mobile_nodes):
+			print 'Mobile Nodes'
+			display(mobile_nodes)
+		#print 'Mobile Nodes\n',mobile_nodes
 		find_cluster(mobile_nodes,radius,0)			
 		j -= 1
 		print '::Executed Thread 2::','\n\n'
@@ -426,27 +465,28 @@ def energy_change():
 '''--------------------------------------------------------------------
 Driver function 
 --------------------------------------------------------------------'''
-
+n_c = int(raw_input('Enter the number of clusters:\n')) 
 nodes_in_cluster(n_c)   #No. of nodes in clusters.
+AP_list = {}
 
 print 'Each clusters with their respective number of APs::'
 print n_AP_clusters
 print '\n'
 print '----------------------------------------------------------'
-
-for k in range(n_c):
+m = 1
+for k in range(1,n_c + 1):
 	print 'Cluster::',k
 	print '\n'
-	AP_list = {} #Dictionary containing the Access Points list.
+	#AP_list = {} #Dictionary containing the Access Points list.
 
 	# 'n' denotes the no. of access points in the vicinity.
 	n = n_AP_clusters['c'+str(k)] #int(raw_input("No. of access points in the cluster::\n"))
 	
 	#Creating the access points with random dBm levels.
 	AP = "AP"
-	for i in range(n):
-		global m
-		AP_list[AP+str(m)] = [random.randint(-100,-50)]
+	for i in range(1,n + 1):
+		#global m
+		AP_list[AP+str(m)] = [random.randint(-70,-30)]
 		m += 1
 
 	print 'The AP list::'
@@ -476,8 +516,8 @@ for key in cluster_heads:
 		cluster_heads[key][item].append(int(key[8]))
 display(cluster_heads)
 #energy_change()
-assign_coordinates()   #'''Assigning the co-ordinates to each AP w.r.t to the CH'''
-
+assign_coordinates()   #''Assigning the co-ordinates to each AP w.r.t to the CH''
+''
 print '\n'
 display(clusters)
 
