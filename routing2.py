@@ -179,6 +179,7 @@ for i in range(1,n_AP+1):
 						CH_x = key
 
 				hops = find_host(CH_x,CH_y)
+
 				count = 0
 				if hops == True:
 					if node1 == CH_x and node2 == CH_y:
@@ -190,6 +191,10 @@ for i in range(1,n_AP+1):
 					else:
 						hops = 3
 						routing_dict[node2] = hops
+
+				elif hops == False:
+					routing_dict[node2] = -1
+
 				elif isinstance(hops,int):
 					if node1 == CH_x and node2 == CH_y:
 						routing_dict[node2] = hops
@@ -197,7 +202,7 @@ for i in range(1,n_AP+1):
 						routing_dict[node2] = hops + 1
 					else:
 						routing_dict[node2] = hops + 2
-				
+
 				else:
 					routing_dict[node2] = -1	
 		
