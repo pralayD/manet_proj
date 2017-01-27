@@ -9,10 +9,10 @@ def display(temp_list):		# Display the items in the passed Dictionaries.
 	    print keys,'::',values
 	    print'\n'
 
-
-#Reading the files : 1. Clusters file  2. Cluster Heads file  3. Files containing the APs not a part of any cluster. 
-#					 4. Cluster Heads in the vicinity of other Cluster Heads.
-
+'''
+Reading the files : 1. Clusters file  2. Cluster Heads file  3. Files containing the APs not a part of any cluster. 
+					 4. Cluster Heads in the vicinity of other Cluster Heads.
+'''
 
 clusters_r = pickle.load(open('clust_f.txt','r')) 
 cluster_heads_r = pickle.load(open('clust_h_f.txt','r'))
@@ -77,9 +77,13 @@ def find_host(CH_x,CH_y):
 # Displaying all the files read.
 
 
+print 'Clusters::'
 display(clusters_r)
+print 'Cluster Heads::'
 display(cluster_heads_r)
+print 'Not reachable APs::'
 display(remaining_APs)
+
 
 
 # Merging all the cluster files into a single file respectively.
@@ -109,6 +113,7 @@ display(temp_dict_AP)
 print '-------'
 '''
 
+
 # Creating the Distance Matrix.
 
 
@@ -116,23 +121,22 @@ routing_table = collections.OrderedDict()
 for i in range(1,n_AP+1):
 	routing_dict = collections.OrderedDict()
 	node1 = 'AP'+str(i)
-	#print 'node1',node1
+
 	if node1 in temp_dict_r:
 		cl_no = temp_dict_r[node1][3]
 	elif node1 in temp_dict_AP:
 		cl_no = temp_dict_AP[node1][3]
-	#print node1,cl_no
+	
 	for j in range(1,n_AP+1):
+
 
 		# For Intra-Cluster
 
 
 		node2 = 'AP'+str(j)
-		#print 'node2',node2
 		if node2 == node1:
 			routing_dict[node2] = 0 
-			#continue
-
+			
 		elif node2 in temp_dict_AP or node1 in temp_dict_AP:
 			routing_dict[node2] = -1 
 
@@ -140,9 +144,11 @@ for i in range(1,n_AP+1):
 			if cl_no == temp_dict_r[node2][3] and (node2 in temp_dict_h or node1 in temp_dict_h):
 				routing_dict[node2] = 1
 			elif cl_no == temp_dict_r[node2][3]:
-				'''
-				if distance from node1 to its CH is greater than the distance from node1 to node2.
-				'''
+
+				
+				#if distance from node1 to its CH is greater than the distance from node1 to node2.
+				
+
 				x1 = temp_dict_r[node1][1]
 				y1 = temp_dict_r[node1][2]
 				x2 = temp_dict_r[node2][1]
@@ -161,7 +167,9 @@ for i in range(1,n_AP+1):
 				else:
 					routing_dict[node2] = 2
 
+
 		#For Inter-Cluster
+
 
 			else:
 				for key in temp_dict_h:
@@ -196,15 +204,23 @@ for i in range(1,n_AP+1):
 	routing_table[node1] = routing_dict
 
 
+
 # Displaying the Distance Matrix calculated.
 
 
 print 'Routing Table'
 display(routing_table)
 
-print '::\nBuilding the Routing Matrix::\n'
+print 'Detected CHS..'
+display(cluster_heads_detected)
+
+
+print '\nRouting Matrix dumped !\n'
 route_matrix = open('route_matrix.txt','w+')
-#hops = []
+
+
+#Dumping the Distance Matrix
+
 
 for key in routing_table:
 	count = 0
@@ -217,10 +233,3 @@ for key in routing_table:
 	route_matrix.write('\n')
 
 route_matrix.close()
-print 'Detected CHS..'
-display(cluster_heads_detected)
-
-
-'''
-Problem :: Cluster Head to a node in different cluster.
-'''

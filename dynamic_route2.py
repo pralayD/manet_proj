@@ -6,6 +6,7 @@ This module is for checking the Signal Quality based on distance to calculate th
 '''----------------------------------------------
 Creating clusters and distributing the APs.
 -------------------------------------------------'''
+
 import random,math
 import pickle
 import time
@@ -26,6 +27,7 @@ def nodes_in_cluster(n_c): #Creating random amount of APs for each cluster.
 
 
 def avg_calc(temp_list,status):  #Calculating the Average dBm level list.
+	print 'recvd list avg_calc',temp_list
 	#if status == 1:
 	#	AP_list = temp_list
 	total = 0
@@ -36,9 +38,9 @@ def avg_calc(temp_list,status):  #Calculating the Average dBm level list.
 			total += temp
 		avg_scan_list[i] = total / n
 		total = 0
-	#print 'Average dBm level list::'
-	#print avg_scan_list
-	#print '\n'
+	print 'Average dBm level list::'
+	print avg_scan_list
+	print '\n'
 	#print 'AP---',AP_list
 	new_CH = maxm_calc(temp_list,status)
 	if new_CH == False:
@@ -48,44 +50,58 @@ def avg_calc(temp_list,status):  #Calculating the Average dBm level list.
 	if status == 0:
 		return new_CH
 
-
-def maxm_calc(temp_list,status):
+stack = {}
+def maxm_calc(li_x,status):
+	print 'rcvd list maxm_calc',li_x
+	global stack
 	global AP_list
 	if status == 0:		# Returning the AP having the Maximum dBm average.
-		return max(temp_list,key = temp_list.get)
+		return max(li_x,key = li_x.get)
 	else:
-		if len(temp_list):
-			new_CH = max(temp_list,key = temp_list.get)
+		if len(li_x):
+			new_CH = max(li_x,key = li_x.get)
 			if AP_list[new_CH][4] > 35:
 				return new_CH
 			else:
-				#print new_CH,'deleted'
-				del temp_list[new_CH]
-				#print 'new twm',temp_list
-				new_CH = maxm_calc(temp_list,status)
+				print new_CH,'deleted'
+				stack[new_CH] = AP_list[new_CH]
+				print 'stack elements',stack
+				del li_x[new_CH]
+				print 'after deletion',li_x
+				new_CH = maxm_calc(li_x,status)
 				if new_CH == False:
+					print 'Returning false.'
 					return False
 				else:
+					print 'new_ch',new_CH
 					return new_CH
 		else:
 			return False
-	#return False
+	
 	
 
 def find_CH(temp_list,k,status):
+	#global stack
+	print 'Rcvd list',temp_list
+	global AP_list
 	 # Finding the CH every time the co-ordinate changes.
-		
+	global cluster_heads
 	new_CH = avg_calc(temp_list,status)
 	#CLuster head on the basis of maximum of average dBm levels.
 	#print new_CH
 	c_h = {}
 	#new_CH = maxm_calc(avg_scan_list,AP_list,status) 
 	if new_CH != False:
+		AP_list.update(stack)
+		print 'stack',stack
+		print 'temp_list',temp_list
+		print 'Ap-list',AP_list
 		c_h[new_CH] = AP_list[new_CH]
 		cluster_heads['Cluster '+str(k)] = dict(c_h)
 	#print 'Done'
 	#print 'CH\n',cluster_heads
 	#print cluster_heads
+#	stack.clear()
 	avg_scan_list.clear()
 	c_h.clear()
 	
@@ -106,6 +122,7 @@ def check_dBm(normalized_distance):		# Assigning the dBm values to each AP.
 	return normalized_distance
 
 
+
 def check_Signal_Quality(distance_list,new_min = 0, new_max = 70): #Normalizing the distance of each AP out of 70 from the respective CH.
 	#print 'DL'
 	#print distance_list
@@ -121,6 +138,7 @@ def check_Signal_Quality(distance_list,new_min = 0, new_max = 70): #Normalizing 
 			
 			output.append(round(temp,3))
 		return output
+
 
 
 def normalize_distance():		# Calculating the distance of each AP from the respective CH in order to normalize.
@@ -217,11 +235,13 @@ def assign_coordinates():	# Assign CHs to each cluster whenever the co-ordinate 
 			else:
 				cluster_heads[key][item].append(random.randint(20,100))
 
+
 def display(temp_list):		# Display the items in the passed Dictionaries.
 	for keys,values in temp_list.items():
 	    print(keys)
 	    print(values)
 	    print'\n'
+	    
 
 def cluster_head_detection(radius):
 	#print '--------------------------------'
@@ -295,10 +315,12 @@ def change_coordinates(i):
 		normalize_distance()	#For updating the dBm values of each AP.
 		cluster_heads.clear()
 		for key in clusters:
+			global AP_list
 			#print 'keys::\n',clusters[key]
 			AP_list = clusters[key]
 			#print 'status 1',AP_list
-			find_CH(clusters[key],key[8],status)
+			find_CH(AP_list,key[8],status)
+			clusters[key] = AP_list
 			#print 'Cluster Heads..\n'
 			
 		print 'New Cluster Heads assigned...\n'

@@ -28,7 +28,6 @@ def assign_coordinates(c,AP_list):
 	
 	(AP_list[c_h]).append(int(raw_input('X-coordinate::')))
 	(AP_list[c_h]).append(int(raw_input('Y-coordinate::')))
-	
 	x = AP_list[c_h][0]		# Taking out the X-value
 	y = AP_list[c_h][1]		# Taking out the Y-value
 	r = 3
