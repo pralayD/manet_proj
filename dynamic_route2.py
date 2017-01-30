@@ -23,7 +23,7 @@ avg_scan_list = {} #Finding the average of the dBm levels from each AP to the ot
 
 def nodes_in_cluster(n_c): #Creating random amount of APs for each cluster.
 	for i in range(1,n_c + 1):
-		n_AP_clusters['c'+str(i)] = 10#random.randint(2,6)
+		n_AP_clusters['c'+str(i)] = 5#random.randint(2,6)
 
 
 def avg_calc(temp_list,status):  #Calculating the Average dBm level list.
@@ -101,7 +101,7 @@ def find_CH(temp_list,k,status):
 	#print 'Done'
 	#print 'CH\n',cluster_heads
 	#print cluster_heads
-#	stack.clear()
+	stack.clear()
 	avg_scan_list.clear()
 	c_h.clear()
 	

@@ -167,7 +167,7 @@ for i in range(1,n_AP+1):
 				else:
 					routing_dict[node2] = 2
 
-
+		
 		#For Inter-Cluster
 
 
