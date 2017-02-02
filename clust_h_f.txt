@@ -2,25 +2,25 @@
 S'Cluster 5'
 p1
 (dp2
-S'AP22'
+S'AP24'
 p3
 (lp4
-I-43
-aI11
-aI37
+I-37
+aI14
+aI40
 aI5
-aI52
+aI78
 assS'Cluster 4'
 p5
 (dp6
 S'AP20'
 p7
 (lp8
-I-50
-aI42
-aI42
+I-30
+aI38
+aI36
 aI4
-aI67
+aI39
 assS'Cluster 3'
 p9
 (dp10
@@ -28,30 +28,30 @@ S'AP15'
 p11
 (lp12
 I-31
-aI42
-aI40
+aI50
+aI48
 aI3
-aI45
+aI48
 assS'Cluster 2'
 p13
 (dp14
-S'AP10'
+S'AP6'
 p15
 (lp16
-I-32
-aI78
+I-33
+aI74
 aI48
 aI2
-aI88
+aI37
 assS'Cluster 1'
 p17
 (dp18
-S'AP2'
+S'AP3'
 p19
 (lp20
-I-43
-aI88
-aI42
+I-36
+aI86
+aI40
 aI1
-aI96
+aI66
 ass.
