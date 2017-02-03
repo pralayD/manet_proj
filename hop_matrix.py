@@ -1,3 +1,4 @@
+import os
 import pickle
 import collections
 
@@ -80,7 +81,7 @@ for c_h in heads:
 				#Matrix[y1-1][x-1] = 2
 				Matrix[x-1][y2-1] = 1
 				Matrix[y2-1][x-1] = 1			
-
+os.system('pause')
 print '\nRouting Matrix dumped !\n'
 distance_matrix = open('distance_matrix.txt','w+')
 

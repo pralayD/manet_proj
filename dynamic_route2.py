@@ -6,7 +6,7 @@ This module is for checking the Signal Quality based on distance to calculate th
 '''----------------------------------------------
 Creating clusters and distributing the APs.
 -------------------------------------------------'''
-
+import os
 import random,math
 import pickle
 import time
@@ -17,13 +17,16 @@ cluster_heads = {} # Dictionary with final CHs.
 n_AP_clusters = {} # No. of APs in each cluster.
 not_assigned = {} # Mobile nodes not assigned to any cluster.
 avg_scan_list = {} #Finding the average of the dBm levels from each AP to the other.
-
+n_AP = 0
 
 
 
 def nodes_in_cluster(n_c): #Creating random amount of APs for each cluster.
+	global n_AP
 	for i in range(1,n_c + 1):
-		n_AP_clusters['c'+str(i)] = 5#random.randint(2,6)
+		nodes = 5#random.randint(2,6)
+		n_AP_clusters['c'+str(i)] = nodes
+		n_AP += nodes
 
 
 def avg_calc(temp_list,status):  #Calculating the Average dBm level list.
@@ -230,10 +233,10 @@ def assign_coordinates():	# Assign CHs to each cluster whenever the co-ordinate 
 					clusters[key][item].append(y)
 				
 				clusters[key][item].append(int(key[8]))
-				clusters[key][item].append(random.randint(20,100))
+				clusters[key][item].append(random.randint(40,100))
 
 			else:
-				cluster_heads[key][item].append(random.randint(20,100))
+				cluster_heads[key][item].append(random.randint(40,100))
 
 
 def display(temp_list):		# Display the items in the passed Dictionaries.
@@ -349,6 +352,8 @@ def change_coordinates(i):
 		
 		clone_not_assigned.clear()
 		print '::Executed Thread 1::','\n\n'
+		print '\nInitiating the deployment script...\n'
+		os.system('python h_m.py')
 		time.sleep(10)			
 
 
@@ -489,6 +494,12 @@ Driver function
 --------------------------------------------------------------------'''
 n_c = int(raw_input('Enter the number of clusters:\n')) 
 nodes_in_cluster(n_c)   #No. of nodes in clusters.
+
+fo = open('inputs.txt','w+')
+fo.write(str(n_c) + ' ')
+fo.write(str(n_AP))
+fo.close()
+
 AP_list = {}
 
 print 'Each clusters with their respective number of APs::'

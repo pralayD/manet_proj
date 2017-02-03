@@ -1,8 +1,10 @@
 import pickle
 import collections
 
-n_c = int(raw_input()) # No. of clusters
-n_AP = int(raw_input()) # No. of APs throughout the network.
+with open('inputs.txt') as f:
+	for x in f:
+		n_c,n_AP = map(int,x.split(' '))
+	
 
 clusters_r = pickle.load(open('clust_f.txt','r')) 
 cluster_heads_r = pickle.load(open('clust_h_f.txt','r'))
