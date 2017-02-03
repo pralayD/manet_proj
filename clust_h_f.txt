@@ -1,57 +1,24 @@
 (dp0
-S'Cluster 5'
+S'Cluster 2'
 p1
 (dp2
-S'AP24'
+S'AP7'
 p3
 (lp4
-I-37
-aI14
-aI40
-aI5
-aI78
-assS'Cluster 4'
+I-32
+aI11
+aI45
+aI2
+aI89
+assS'Cluster 1'
 p5
 (dp6
-S'AP20'
+S'AP4'
 p7
 (lp8
-I-30
-aI38
-aI36
-aI4
-aI39
-assS'Cluster 3'
-p9
-(dp10
-S'AP15'
-p11
-(lp12
 I-31
-aI50
-aI48
-aI3
-aI48
-assS'Cluster 2'
-p13
-(dp14
-S'AP6'
-p15
-(lp16
-I-33
-aI74
-aI48
-aI2
-aI37
-assS'Cluster 1'
-p17
-(dp18
-S'AP3'
-p19
-(lp20
-I-36
-aI86
-aI40
+aI34
+aI35
 aI1
-aI66
+aI74
 ass.
